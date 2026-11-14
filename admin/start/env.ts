@@ -30,6 +30,19 @@ export default await Env.create(new URL('../', import.meta.url), {
 
   /*
   |----------------------------------------------------------
+  | Variables for running outside the stock compose layout
+  | (e.g. Kubernetes with a Docker-in-Docker sidecar)
+  |----------------------------------------------------------
+  | DOCKER_SOCKET_PATH          Docker socket the admin drives (default /var/run/docker.sock)
+  | NOMAD_SERVICE_HOST          Host the admin dials child apps on (default: container name)
+  | NOMAD_SERVICE_URL_TEMPLATE  Browser URL for curated apps, e.g. https://nomad-{name}.example.com
+  */
+  DOCKER_SOCKET_PATH: Env.schema.string.optional(),
+  NOMAD_SERVICE_HOST: Env.schema.string.optional(),
+  NOMAD_SERVICE_URL_TEMPLATE: Env.schema.string.optional(),
+
+  /*
+  |----------------------------------------------------------
   | Variables for configuring session package
   |----------------------------------------------------------
   */

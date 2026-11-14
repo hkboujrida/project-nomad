@@ -8,6 +8,7 @@ import { pickAmdHsaOverride } from '../utils/amd_hsa_override.js'
 import { join } from 'path'
 import os from 'node:os'
 import env from '#start/env'
+import { resolveServiceHost } from '../utils/service_endpoints.js'
 import {
   ZIM_STORAGE_PATH,
   BOOKS_STORAGE_PATH,
@@ -61,7 +62,7 @@ export class DockerService {
       this.docker = new Docker({ socketPath: '//./pipe/docker_engine' })
     } else {
       // Linux uses Unix socket
-      this.docker = new Docker({ socketPath: '/var/run/docker.sock' })
+      this.docker = new Docker({ socketPath: env.get('DOCKER_SOCKET_PATH') || '/var/run/docker.sock' })
     }
   }
 
@@ -246,7 +247,10 @@ export class DockerService {
       return null
     }
 
-    const hostname = process.env.NODE_ENV === 'production' ? serviceName : 'localhost'
+    const hostname = resolveServiceHost(serviceName, {
+      nodeEnv: process.env.NODE_ENV,
+      serviceHostOverride: env.get('NOMAD_SERVICE_HOST'),
+    })
 
     // "https:8480" / "http:8480" — explicit scheme + port (e.g. an app serving its own TLS).
     const schemePort = service.ui_location?.match(/^(https?):(\d+)$/)

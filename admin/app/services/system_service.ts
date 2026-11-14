@@ -18,6 +18,7 @@ import path, { join } from 'node:path'
 import { getAllFilesystems, getFile } from '../utils/fs.js'
 import axios from 'axios'
 import env from '#start/env'
+import { templateServiceUrl } from '../utils/service_endpoints.js'
 import KVStore from '#models/kv_store'
 import { KV_STORE_SCHEMA, KVStoreKey } from '../../types/kv_store.js'
 import { isNewerVersion } from '../utils/version.js'
@@ -340,7 +341,15 @@ export class SystemService {
         installation_status: service.installation_status,
         status: status ? status.status : 'unknown',
         ui_location: service.ui_location || '',
-        custom_url: service.custom_url,
+        custom_url:
+          service.custom_url ||
+          (service.is_custom
+            ? null
+            : templateServiceUrl(
+                service.service_name,
+                service.ui_location,
+                env.get('NOMAD_SERVICE_URL_TEMPLATE')
+              )),
         powered_by: service.powered_by,
         display_order: service.display_order,
         container_image: service.container_image,
