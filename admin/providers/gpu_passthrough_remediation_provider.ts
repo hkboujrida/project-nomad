@@ -55,7 +55,7 @@ export default class GpuPassthroughRemediationProvider {
           return
         }
 
-        const docker = new Docker({ socketPath: '/var/run/docker.sock' })
+        const docker = new Docker({ socketPath: process.env.DOCKER_SOCKET_PATH || '/var/run/docker.sock' })
         const dockerInfo = await docker.info()
         const runtimes = dockerInfo.Runtimes || {}
 

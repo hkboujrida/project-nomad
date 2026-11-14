@@ -32,7 +32,7 @@ export default class QdrantRestartPolicyProvider {
           return
         }
 
-        const docker = new Docker({ socketPath: '/var/run/docker.sock' })
+        const docker = new Docker({ socketPath: process.env.DOCKER_SOCKET_PATH || '/var/run/docker.sock' })
         const containers = await docker.listContainers({ all: true })
         const containerInfo = containers.find((c) => c.Names.includes(`/${SERVICE_NAMES.QDRANT}`))
 
